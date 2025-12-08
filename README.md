@@ -1,11 +1,11 @@
-# Breaking News Scraper
+# Breaking News Scraping & Detection
 
 A Python-based news scraping system that collects articles from Bangladeshi news websites and automatically detects breaking news using AI-powered similarity analysis.
 
 ## Features
 
 - **Multi-source scraping**: Jamuna TV, Somoy TV, Independent TV
-- **Breaking news detection**: AI-powered classification using Ollama embeddings
+- **Breaking news detection**: AI-powered classification using Ollama based embedding model
 - **Database storage**: MySQL integration with duplicate prevention
 
 ## Project Structure
