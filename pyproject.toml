@@ -11,6 +11,5 @@ dependencies = [
     "numpy>=2.3.5",
     "ollama>=0.6.1",
     "pip>=25.3",
-    "playwright>=1.56.0",
     "requests>=2.32.5",
 ]

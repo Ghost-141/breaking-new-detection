@@ -7,6 +7,7 @@ A Python-based news scraping system that collects articles from Bangladeshi news
 - **Multi-source scraping**: Jamuna TV, Somoy TV, Independent TV
 - **Breaking news detection**: AI-powered classification using Ollama embeddings
 - **Database storage**: MySQL integration with duplicate prevention
+- **WhatsApp Notification**: Send breaking news to WhatsApp
 
 ## Project Structure
 
@@ -43,25 +44,28 @@ Scrapping Codes/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Ghost-141/breaking-new-detection
    cd "Scrapping Codes"
    ```
 
 2. **Install dependencies**
    ```bash
+   pip install uv
    uv sync
    ```
 
-3. **Setup MySQL database**
-   ```bash
-   mysql -u root -p < news_automation.sql
-   ```
+3. **Setup MySQL database**  Export the [news_automation](news_automation.sql) sql database from admin panel.
 
-4. **Install Ollama and embedding model**
-   ```bash
-   # Install Ollama (https://ollama.ai)
-   ollama pull embeddinggemma:300m
-   ```
+4. **Configure environment variables**
+   
+   - Create a `.env` file in the project root similar to 
+   
+   - Update `.env` with your WhatsApp API credentials:
+      ```env
+      INSTANCE=your_ultramsg_instance
+      TOKEN=your_ultramsg_token
+      ID=your_whatsapp_group_id
+      ```
 
 5. **Configure database connection**
    Update `utils/db.py` with your MySQL credentials:
@@ -72,6 +76,12 @@ Scrapping Codes/
        password="your_password",
        database="news_automation"
    )
+   ```
+
+6. **Install Ollama and embedding model**
+   ```bash
+   # Install Ollama (https://ollama.com/download)
+   ollama pull embeddinggemma:latest
    ```
 
 ## Usage
