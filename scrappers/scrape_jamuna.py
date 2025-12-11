@@ -47,16 +47,13 @@ def scrape_jamuna():
 
                 print(f"\nProcessing: {title}")
 
-                is_breaking = is_breaking_news(title, summary, publish_time)
-
                 save_to_db(
                     source="Jamuna TV",
                     title=title,
                     summary=summary,
                     category="",
                     link=link,
-                    publish_time=publish_time,
-                    is_breaking=is_breaking,
+                    publish_time=publish_time
                 )
 
             except Exception as e:

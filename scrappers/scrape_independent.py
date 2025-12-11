@@ -61,18 +61,13 @@ def scrape_independent():
                 paragraphs = soup_article.select(".content_details p")
                 summary = "\n".join([p.get_text(strip=True) for p in paragraphs])
 
-                is_breaking = is_breaking_news(
-                    item["title"], summary, item["publish_time"]
-                )
-
                 save_to_db(
                     source="Independent TV",
                     title=item["title"],
                     summary=summary,
                     category="",
                     link=item["link"],
-                    publish_time=item["publish_time"],
-                    is_breaking=is_breaking,
+                    publish_time=item["publish_time"]
                 )
 
                 # print(f"Saved: {item['title']}")

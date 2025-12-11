@@ -81,16 +81,13 @@ def scrape_somoy():
 
                 print(f"\nProcessing: {title}")
 
-                is_breaking = is_breaking_news(title, subtitle, publish_time)
-
                 save_to_db(
                     source="Somoy TV",
                     title=title,
                     summary=subtitle,
                     category=category,
                     link=link,
-                    publish_time=publish_time,
-                    is_breaking=is_breaking,
+                    publish_time=publish_time
                 )
 
                 time.sleep(1)

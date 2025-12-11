@@ -6,18 +6,17 @@ conn = mysql.connector.connect(
 cursor = conn.cursor(dictionary=True)  # type: ignore
 
 
-def save_to_db(source, title, summary, category, link, publish_time, is_breaking=0):
+def save_to_db(source, title, summary, category, link, publish_time):
     try:
         sql = """
         INSERT INTO news 
-        (source, title, summary, category, link, publish_time, is_breaking, sent_status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, 0)
+        (source, title, summary, category, link, publish_time, is_breaking, pending, sent_status)
+        VALUES (%s, %s, %s, %s, %s, %s, 0, 0, 0)
         """
         cursor.execute(
-            sql, (source, title, summary, category, link, publish_time, is_breaking)
+            sql, (source, title, summary, category, link, publish_time)
         )
         conn.commit()
-        print(f"Saved: {title} (Breaking: {True if is_breaking else False})")
         return cursor.lastrowid
     except mysql.connector.errors.IntegrityError:
         print(f"Already exists : {title}")
@@ -28,7 +27,7 @@ def save_to_db(source, title, summary, category, link, publish_time, is_breaking
 
 
 def get_pending_breaking_news():
-    """Fetch breaking news with sent_status = 0"""
+    """Fetch breaking news with pending and sent_status = 0"""
     try:
         sql = "SELECT id, title, link, source FROM news WHERE is_breaking = 1 AND sent_status = 0"
         cursor.execute(sql)

@@ -2,7 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(".env.dep")
 
 # WhatsApp API Config
 ULTRA_INSTANCE = os.getenv("INSTANCE")
