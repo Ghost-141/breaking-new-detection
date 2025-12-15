@@ -26,9 +26,9 @@ def send_breaking_news():
         if send_whatsapp(news_data):
             # Update sent status if successful
             if update_sent_status(news["id"]):
-                print(f"✅ Sent and updated: {news['title'][:20]}...")
+                print(f"✅ Sent and updated: {news['title'][:40]}...")
             else:
-                print(f"❌ Sent but failed to update status: {news['title'][:20]}...")
+                print(f"❌ Sent but failed to update status: {news['title'][:40]}...")
         else:
             print(f"❌ Failed to send: {news['title'][:50]}...")
 

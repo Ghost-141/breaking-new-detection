@@ -5,11 +5,23 @@ build/
 dist/
 wheels/
 *.egg-info
+*.ipynb
+*.log
 
 # Virtual environments
+
 .venv
-.env
+*.env.dep
+.env.test
 
 # Database
+
 *.db 
 *.json
+*.txt 
+
+# Folders
+
+*models
+*.vscode
+*test_functions

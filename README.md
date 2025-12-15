@@ -1,18 +1,20 @@
 # Breaking News Scraper
 
-A Python-based news scraping system that collects articles from Bangladeshi news websites and automatically detects breaking news using AI-powered similarity analysis.
+A Python-based news scraping system that collects articles from Bangladeshi news websites and automatically detects breaking news using AI-powered similarity analysis with local embedding models.
 
 ## Features
 
 - **Multi-source scraping**: Jamuna TV, Somoy TV, Independent TV
-- **Breaking news detection**: AI-powered classification using Ollama embeddings
-- **Database storage**: MySQL integration with duplicate prevention
-- **WhatsApp Notification**: Send breaking news to WhatsApp
+- **Breaking news detection**: AI-powered classification using local sentence transformers
+- **International news filtering**: Automatic filtering of international news
+- **Database storage**: MySQL integration with duplicate prevention and pending status tracking
+- **WhatsApp integration**: Automatic breaking news notifications
 
 ## Project Structure
 
 ```
 Scrapping Codes/
+├── models/              # Local AI models
 ├── scrappers/           # News scraper modules
 │   ├── chrome_driver.py # Selenium WebDriver utilities
 │   ├── scrape_jamuna.py # Jamuna TV scraper
@@ -22,13 +24,19 @@ Scrapping Codes/
 ├── utils/               # Utility functions
 │   ├── db.py           # Database operations
 │   ├── news_detector.py # Breaking news detection logic
+│   ├── filters.py      # Country/region filters and breaking keywords
+│   ├── is_break.py     # Core breaking news detection with embeddings
+│   ├── news_filter.py  # International news filtering
 │   ├── send_breaking_news.py # Breaking news sender
 │   └── send_message.py # WhatsApp message utilities
 ├── main.py             # Main application entry point
-├── query_db.py         # Database query utilities
-├── test_breaking_news.py # Breaking news testing
-├── news_automation.sql # Database schema
-└── pyproject.toml      # Project dependencies
+├── is_break.py         # Breaking news detection (root level)
+├── save_model.py       # Model saving utilities
+├── main.sh             # Shell script for automation
+├── pyproject.toml      # Project dependencies
+├── uv.lock            # UV lock file
+├── .env.example       # Environment variables example
+└── .python-version    # Python version specification
 ```
 
 ## Setup
@@ -38,36 +46,35 @@ Scrapping Codes/
 - Python 3.13+
 - MySQL Server
 - Chrome Browser
-- Ollama (for Vector Embeddings)
+- CUDA-compatible GPU (optional, for faster inference)
+- UV package manager
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Ghost-141/breaking-new-detection
+   git clone <repository-url>
    cd "Scrapping Codes"
    ```
 
 2. **Install dependencies**
    ```bash
-   pip install uv
    uv sync
    ```
 
-3. **Setup MySQL database**  Export the [news_automation](news_automation.sql) sql database from admin panel.
+3. **Setup MySQL database**
+   ```bash
+   mysql -u root -p < news_automation.sql
+   ```
 
-4. **Configure environment variables**
-   
-   - Create a `.env` file in the project root similar to 
-   
-   - Update `.env` with your WhatsApp API credentials:
-      ```env
-      INSTANCE=your_ultramsg_instance
-      TOKEN=your_ultramsg_token
-      ID=your_whatsapp_group_id
-      ```
+4. **Download embedding models**
 
-5. **Configure database connection**
+   Download the embedding model from hugging face repository and save it to local device for future usage.
+
+5. **Setup environment variables**
+   create a .env file similar to [.env.example](.env.example) and update the .env file name to [send_message]](utils/send_message.py) function.
+
+6. **Configure database connection**
    Update `utils/db.py` with your MySQL credentials:
    ```python
    conn = mysql.connector.connect(
@@ -76,12 +83,6 @@ Scrapping Codes/
        password="your_password",
        database="news_automation"
    )
-   ```
-
-6. **Install Ollama and embedding model**
-   ```bash
-   # Install Ollama (https://ollama.com/download)
-   ollama pull embeddinggemma:latest
    ```
 
 ## Usage
@@ -96,6 +97,7 @@ python main.py
 python -m scrappers.scrape_somoy
 python -m scrappers.scrape_jamuna
 python -m scrappers.scrape_independent
+python -m scrappers.scrape_channel24
 ```
 
 ### Send Breaking News to WhatsApp
@@ -105,16 +107,28 @@ python -m utils.send_breaking_news
 
 ### Query Database
 ```bash
-python query_db.py
+python test_functions/query_db.py
+```
+
+### Test Breaking News Detection
+```bash
+python test_functions/test_breaking_news.py
+```
+
+### Run with Shell Script
+```bash
+./main.sh
 ```
 
 ## Breaking News Detection
 
 The system uses AI-powered similarity analysis to detect breaking news:
 
-- **Threshold**: Similarity score > 0.50 = Breaking news
+- **Threshold**: Configurable similarity score (default: 0.85)
 - **Keywords**: Predefined Bengali keywords for critical events
-- **Model**: Ollama embeddinggemma:300m for text embeddings
+- **Models**: Local sentence transformers (e5-small, bengali-sentence-similarity-sbert)
+- **Processing**: Batch processing with GPU acceleration when available
+- **Filtering**: International news filtering to focus on local breaking news
 - **Output**: Returns 1 (breaking) or 0 (normal)
 
 ### Breaking News Keywords
@@ -129,13 +143,16 @@ The system uses AI-powered similarity analysis to detect breaking news:
 CREATE TABLE news (
     id INT AUTO_INCREMENT PRIMARY KEY,
     source VARCHAR(100),
-    title TEXT,
+    title VARCHAR(255) NOT NULL,
     summary TEXT,
+    full_content LONGTEXT,
     category VARCHAR(100),
-    link TEXT,
-    publish_time VARCHAR(100),
+    link VARCHAR(500) NOT NULL UNIQUE,
+    thumbnail VARCHAR(500),
+    publish_time VARCHAR(500),
     is_breaking TINYINT DEFAULT 0,
     sent_status TINYINT DEFAULT 0,
+    pending TINYINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -143,11 +160,21 @@ CREATE TABLE news (
 ## Dependencies
 
 - **selenium**: Web scraping automation
-- **mysql-connector**: Database connectivity
-- **ollama**: AI embeddings for breaking news detection
-- **numpy**: Numerical computations
+- **sentence-transformers**: Local AI embeddings for breaking news detection
 - **beautifulsoup4**: HTML parsing
-- **requests**: HTTP requests
+- **webdriver-manager**: Automatic WebDriver management
+## Environment Configuration
+
+The project supports multiple environments:
+- `.env.dep`: Development environment
+- `.env.test`: Testing environment
+- `.env.example`: Template for environment variables
+
+## Automation
+
+- **Cron Integration**: Use `main.sh` for scheduled execution
+- **Logging**: Comprehensive logging in `cron.log`
+- **Model Management**: Local model storage in `models/` directory
 
 
 

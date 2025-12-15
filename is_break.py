@@ -2,10 +2,13 @@ import logging
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import torch
+import os
 
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Lightweight multilingual embedding model for small GPUs
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L12-v2"
+EMBEDDING_MODEL_NAME = "models/e5-small"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 BREAKING_KEYWORDS = [
@@ -15,31 +18,29 @@ BREAKING_KEYWORDS = [
     "খুন",
     "মারা গেছে",
     "দুর্ঘটনা",
+    "হামলা",
     "প্রাণ",
     "মৃতদেহ",
     "ধর্ষণ",
     "আগুন",
     "বিস্ফোরণ",
     "উদ্ধার",
-    "ভূমিকম্প",
-    "বন্যা",
-    "ঘূর্ণিঝড়",
-    "ঝড়",
+    "প্রাকৃতিক বিপর্যয় বা দুর্যোগ "
     "রাজনৈতিক সহিংসতা",
     "নির্বাচন",
     "ভোট",
     "রাষ্ট্রপতি",
     "গ্রেফতার",
     "রিমান্ডে",
-    "উদ্ধার",
+    "অ্যালার্ট",
+    "উদ্ধার অভিযান",
     "মোতায়েন",
+    "তল্লাশি",
+    "নিষিদ্ধ",
     "অবরোধ",
-    "বিক্ষোভ",
-    "মিছিল",
+    "বিক্ষোভ মিছিল",
     "ধাওয়া–পাল্টাধাওয়া",
-    "রিমান্ড",
-    "ঘোষণা",
-    "জরুরি",
+    "জরুরি ঘোষণা",
     "বিল পাস",
     "রায়",
     "গুরুতর আহত",
@@ -48,7 +49,7 @@ BREAKING_KEYWORDS = [
 ]
 
 # Load model once
-model = SentenceTransformer(EMBEDDING_MODEL_NAME, device=device, trust_remote_code=True)
+model = SentenceTransformer(EMBEDDING_MODEL_NAME, device=device, trust_remote_code=True, local_files_only=True)
 logging.info(f"Loaded embedding model on {device}")
 
 # Precompute keyword embeddings (batch)
