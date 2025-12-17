@@ -1,14 +1,32 @@
 import re
-from utils.filters import COUNTRIES, CAPITALS, INTERNATIONAL_REGIONS, INTERNATIONAL_ORGS, INTERNATIONAL_ADJECTIVES
-
-country_set = set(COUNTRIES)
-capital_set = set(CAPITALS)
-int_region = set(INTERNATIONAL_REGIONS)
-int_org = set(INTERNATIONAL_ORGS)
-int_adj = set(INTERNATIONAL_ADJECTIVES)
-
-all_locations = country_set | capital_set | int_region | int_org | int_adj
-pattern = re.compile("|".join(map(re.escape, all_locations)))
+from utils.filters import COUNTRIES, CAPITALS, INTERNATIONAL_REGIONS, INTERNATIONAL_ORGS, INTERNATIONAL_ADJECTIVES, extras
 
 def filter_international_news(text: str) -> bool:
-    return bool(pattern.search(text))
+    """
+    Detect international news using regex with Bengali suffixes
+    
+    Args:
+        text (str): News title/text
+        
+    Returns:
+        bool: True if international news detected
+    """
+    # Combine all location words
+    all_locations = COUNTRIES + CAPITALS + INTERNATIONAL_REGIONS + INTERNATIONAL_ORGS + INTERNATIONAL_ADJECTIVES + extras
+    
+    # Common Bengali suffixes for locations
+    suffixes = r"(য়|ে|তে|র|এর|কে|দের|সহ|ভিত্তিক)?"
+    
+    # Create regex pattern for each location with optional suffixes
+    patterns = []
+    for location in all_locations:
+        # Escape special regex characters and add suffix pattern
+        escaped_location = re.escape(location)
+        pattern = escaped_location + suffixes
+        patterns.append(pattern)
+    
+    # Combine all patterns with word boundaries
+    full_pattern = r'\b(' + '|'.join(patterns) + r')\b'
+    
+    # Search for matches
+    return bool(re.search(full_pattern, text))
