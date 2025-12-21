@@ -1,4 +1,15 @@
-#!/bin/bash
-cd home/imtiaz/Downloads/Scrapping\ Codes || exit 1
-source /home/imtiaz/Downloads/Scrapping\ Codes/.venv/bin/activate
-python /home/imtiaz/Downloads/Scrapping\ Codes/main.py
+#!/usr/bin/env bash
+
+# Exit immediately on error
+set -e
+
+# Absolute paths ONLY
+PROJECT_DIR="/home/imtiaz/Downloads/Scrapping Codes"
+VENV_PYTHON="/home/imtiaz/Downloads/Scrapping Codes/.venv/bin/python"
+
+# Go to project directory
+cd "$PROJECT_DIR" || exit 1
+
+# Run script using venv python
+"$VENV_PYTHON" main.py
+
