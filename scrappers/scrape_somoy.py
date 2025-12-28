@@ -82,12 +82,7 @@ def scrape_somoy():
                 print(f"\nProcessing: {title}")
 
                 save_to_db(
-                    source="Somoy TV",
-                    title=title,
-                    summary=subtitle,
-                    category=category,
-                    link=link,
-                    publish_time=publish_time
+                    source="Somoy TV", title=title, link=link, publish_time=publish_time
                 )
 
                 time.sleep(1)

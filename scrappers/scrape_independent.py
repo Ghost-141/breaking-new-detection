@@ -64,10 +64,8 @@ def scrape_independent():
                 save_to_db(
                     source="Independent TV",
                     title=item["title"],
-                    summary=summary,
-                    category="",
                     link=item["link"],
-                    publish_time=item["publish_time"]
+                    publish_time=item["publish_time"],
                 )
 
                 # print(f"Saved: {item['title']}")

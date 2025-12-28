@@ -1,21 +1,19 @@
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="localhost", user="root", password="##DevsZone2015##", database="news_automation"
+    host="localhost", user="root", password="", database="news_update"
 )
 cursor = conn.cursor(dictionary=True)  # type: ignore
 
 
-def save_to_db(source, title, summary, category, link, publish_time):
+def save_to_db(source, title, link, publish_time):
     try:
         sql = """
         INSERT INTO news 
-        (source, title, summary, category, link, publish_time, is_breaking, pending, sent_status)
-        VALUES (%s, %s, %s, %s, %s, %s, 0, 0, 0)
+        (source, title, link, publish_time, is_breaking, pending, sent_status)
+        VALUES (%s, %s, %s, %s, 0, 0, 0)
         """
-        cursor.execute(
-            sql, (source, title, summary, category, link, publish_time)
-        )
+        cursor.execute(sql, (source, title, link, publish_time))
         conn.commit()
         return cursor.lastrowid
     except mysql.connector.errors.IntegrityError:
@@ -29,7 +27,7 @@ def save_to_db(source, title, summary, category, link, publish_time):
 def get_pending_breaking_news():
     """Fetch breaking news with pending and sent_status = 0"""
     try:
-        sql = "SELECT id, title, link, source FROM news WHERE is_breaking = 1 AND sent_status = 0"
+        sql = "SELECT id, title, link, source FROM news WHERE is_breaking = 1 AND sent_status = 0 AND DATE(created_at) = CURDATE()"
         cursor.execute(sql)
         return cursor.fetchall()
     except Exception as e:

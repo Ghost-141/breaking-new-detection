@@ -8,7 +8,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Lightweight multilingual embedding model for small GPUs
-EMBEDDING_MODEL_NAME = "models/e5-small"
+EMBEDDING_MODEL_NAME = "models/multilingual-e5-small"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 BREAKING_KEYWORDS = [
@@ -25,8 +25,7 @@ BREAKING_KEYWORDS = [
     "আগুন",
     "বিস্ফোরণ",
     "উদ্ধার",
-    "প্রাকৃতিক বিপর্যয় বা দুর্যোগ "
-    "রাজনৈতিক সহিংসতা",
+    "প্রাকৃতিক বিপর্যয় বা দুর্যোগ " "রাজনৈতিক সহিংসতা",
     "নির্বাচন",
     "ভোট",
     "রাষ্ট্রপতি",
@@ -49,7 +48,9 @@ BREAKING_KEYWORDS = [
 ]
 
 # Load model once
-model = SentenceTransformer(EMBEDDING_MODEL_NAME, device=device, trust_remote_code=True, local_files_only=True)
+model = SentenceTransformer(
+    EMBEDDING_MODEL_NAME, device=device, trust_remote_code=True, local_files_only=True
+)
 logging.info(f"Loaded embedding model on {device}")
 
 # Precompute keyword embeddings (batch)
@@ -61,7 +62,7 @@ keyword_embeddings /= np.linalg.norm(
 )  # Normalize
 
 
-def is_breaking_news(title:str, threshold:float):
+def is_breaking_news(title: str, threshold: float):
     """
     Detect if news is breaking based on semantic similarity to predefined keywords.
 

@@ -31,7 +31,3 @@ def send_breaking_news():
                 print(f"❌ Sent but failed to update status: {news['title'][:40]}...")
         else:
             print(f"❌ Failed to send: {news['title'][:50]}...")
-
-
-# if __name__ == "__main__":
-#     send_breaking_news()
