@@ -5,6 +5,8 @@ build/
 dist/
 wheels/
 *.egg-info
+models
+
 *.ipynb
 *.log
 
@@ -13,11 +15,13 @@ wheels/
 .venv
 *.env.dep
 .env.test
+.env.dep.test
 
 # Database
 
 *.db 
 *.json
+*.txt
 *.txt 
 
 # Folders

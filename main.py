@@ -10,7 +10,7 @@ def scrape_all_news():
     """Run all news scrapers and save to database"""
     print("=" * 50)
     print("Starting news scraping...")
-    print("=" * 50)
+    print("=" * 50) 
 
     try:
         print("\n[1/3] Scraping Jamuna TV...")

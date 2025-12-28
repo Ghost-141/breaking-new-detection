@@ -34,3 +34,6 @@ def send_whatsapp(news: dict):
     except Exception as e:
         print("Error while sending WhatsApp Message:", e)
         return False
+
+if __name__ == "__main__":
+    send_whatsapp()

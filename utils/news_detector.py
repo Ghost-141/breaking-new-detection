@@ -25,10 +25,12 @@ def process_pending_news():
             time = news["publish_time"]
 
             if not re.match(r"^\d+\s*মিনিট(ে| আগে)?", time):
-                print(f"{i:2d}. ⏭️ SKIPPED | {news['title'[:30]]}... (Time: {news['publish_time']})")
+                print(
+                    f"{i:2d}. ⏭️ SKIPPED | {news['title'[:30]]}... (Time: {news['publish_time']})"
+                )
                 continue
             breaking_status = 0
-            try:  
+            try:
                 breaking_status = is_breaking_news(news["title"], threshold=0.85)
                 if breaking_status:
                     global_news = filter_international_news(news["title"])
@@ -37,9 +39,11 @@ def process_pending_news():
                         print(f"🚨 BREAKING NEWS detected!")
                     else:
                         print(f"📰 Regular news")
-                        breaking_status = 0    
+                        breaking_status = 0
             except Exception as e:
-                print(f"{i:2d}. ⚠️ ERROR processing title: {news['title'[:40]]}... | {e}")   
+                print(
+                    f"{i:2d}. ⚠️ ERROR processing title: {news['title'[:40]]}... | {e}"
+                )
                 breaking_status = 0
 
             update_sql = "UPDATE news SET is_breaking = %s, pending = 1 WHERE id = %s"
