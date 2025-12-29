@@ -1,6 +1,6 @@
 import logging
 import re
-from utils.db import cursor, conn
+from utils.db import cursor, conn, save_breaking_news_to_queue
 from is_break import is_breaking_news
 from utils.news_filter import filter_international_news
 
@@ -13,7 +13,7 @@ def process_pending_news():
 
     try:
         print("\n🔍 Fetching pending news...")
-        sql = "SELECT id, title, publish_time FROM news WHERE pending = 0"
+        sql = "SELECT id, title, publish_time FROM news WHERE pending = 0 AND DATE(created_at) = CURDATE()"
         cursor.execute(sql)
         pending_news = cursor.fetchall()
         print(f"📊 Found {len(pending_news)} pending news items")  # type: ignore
@@ -37,6 +37,19 @@ def process_pending_news():
                     if not global_news:
                         breaking_count += 1
                         print(f"🚨 BREAKING NEWS detected!")
+
+                        # Fetch full news details and save to queue
+                        fetch_sql = "SELECT source, link FROM news WHERE id = %s AND DATE(created_at) = CURDATE()"
+                        cursor.execute(fetch_sql, (news["id"],))
+                        news_details = cursor.fetchone()
+                        if news_details:
+                            save_breaking_news_to_queue(
+                                news["id"],
+                                news_details["source"],
+                                news["title"],
+                                news_details["link"],
+                                news["publish_time"],
+                            )
                     else:
                         print(f"📰 Regular news")
                         breaking_status = 0
