@@ -43,8 +43,6 @@ def scrape_jamuna():
                 link = get_element_attribute(item, "a.linkOverlay", "href")
                 publish_time = get_element_text(item, "p.desktopTime")
 
-                summary = extract_summary_from_item(item)
-
                 print(f"\nProcessing: {title}")
 
                 save_to_db(

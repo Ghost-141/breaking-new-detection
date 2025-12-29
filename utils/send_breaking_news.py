@@ -19,7 +19,7 @@ def send_breaking_news():
             "title": news["title"],
             "source": news["source"],
             "link": news["link"],
-            "publish_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "publish_time": datetime.datetime.now().strftime("%I:%M:%S %p"),
         }
 
         # Send to WhatsApp
