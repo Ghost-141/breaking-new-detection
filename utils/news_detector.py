@@ -2,7 +2,7 @@ import logging
 import re
 from utils.db import cursor, conn
 from is_break import is_breaking_news
-from utils.news_filter import filter_international_news
+from utils.news_filter import filter_international_news, news_type_predictor
 
 
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +34,8 @@ def process_pending_news():
                 breaking_status = is_breaking_news(news["title"], threshold=0.85)
                 if breaking_status:
                     global_news = filter_international_news(news["title"])
-                    if not global_news:
+                    news_type = news_type_predictor(news["title"])
+                    if not global_news and news_type.get("label") == "BD":
                         breaking_count += 1
                         print(f"🚨 BREAKING NEWS detected!")
                     else:
