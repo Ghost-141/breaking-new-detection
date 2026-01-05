@@ -2,7 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
-load_dotenv(".env.dep")
+load_dotenv(".env.test")
 
 # WhatsApp API Config
 ULTRA_INSTANCE = os.getenv("INSTANCE")
@@ -34,6 +34,7 @@ def send_whatsapp(news: dict):
     except Exception as e:
         print("Error while sending WhatsApp Message:", e)
         return False
+
 
 if __name__ == "__main__":
     send_whatsapp()
