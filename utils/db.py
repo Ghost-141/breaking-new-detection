@@ -1,7 +1,7 @@
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="localhost", user="root", password="##DevsZone2015##", database="news_automation"
+    host="localhost", user="root", password="", database="news_automation"
 )
 cursor = conn.cursor(dictionary=True)  # type: ignore
 
@@ -13,9 +13,7 @@ def save_to_db(source, title, summary, category, link, publish_time):
         (source, title, summary, category, link, publish_time, is_breaking, pending, sent_status)
         VALUES (%s, %s, %s, %s, %s, %s, 0, 0, 0)
         """
-        cursor.execute(
-            sql, (source, title, summary, category, link, publish_time)
-        )
+        cursor.execute(sql, (source, title, summary, category, link, publish_time))
         conn.commit()
         return cursor.lastrowid
     except mysql.connector.errors.IntegrityError:
